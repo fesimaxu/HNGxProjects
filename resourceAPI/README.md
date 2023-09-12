@@ -179,7 +179,7 @@ http://localhost:6000/api
 
 **Request Format:**
 
-```nodejs
+```javascript
 requests
 
 baseurl = "http://localhost:6000/api/createuser"
@@ -240,7 +240,7 @@ return response
 
 **Request Format:**
 
-```nodejs
+```javascript
 requests
 
 baseurl = "http://localhost:6000/api/users/id"
@@ -286,7 +286,7 @@ return response
 
 **Request Format:**
 
-```nodejs
+```javascript
 requests
 
 baseurl = "http://localhost:6000/api/users/update/{user_id}"

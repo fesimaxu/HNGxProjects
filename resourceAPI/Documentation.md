@@ -161,7 +161,7 @@ http://localhost:6000/api
 
 **Request Format:**
 
-```nodejs
+```javascript
 requests
 
 baseurl = "http://localhost:6000/api/createuser"
@@ -222,7 +222,7 @@ return response
 
 **Request Format:**
 
-```nodejs
+```javascript
 requests
 
 baseurl = "http://localhost:6000/api/users/id"
@@ -268,7 +268,7 @@ return response
 
 **Request Format:**
 
-```nodejs
+```json
 requests
 
 baseurl = "http://localhost:6000/api/users/update/{user_id}"
@@ -344,10 +344,10 @@ return
 Here are some sample API usage scenarios with Python code examples:
 
 1. **Create a Person:**
-   ```nodejs
-   requests
+```json
+requests
 
-   baseurl = "https://resourceapi.onrender.com/api/createusers"
+ baseurl = "https://resourceapi.onrender.com/api/createusers"
 
    body = {
     "userName": "igwekode",
@@ -362,9 +362,7 @@ Here are some sample API usage scenarios with Python code examples:
     "address": "30 oforkarie st. ago",
     "occupation": "developer"
 }
-   
-   return response
-   ```
+```
 
 **Response Format (Success - 200):**
 
@@ -400,7 +398,7 @@ Here are some sample API usage scenarios with Python code examples:
 
     **Response Format (Success - 200):**
 
-  ```json
+```json
    {
     "status": "success",
     "method": "GET",
@@ -423,15 +421,8 @@ Here are some sample API usage scenarios with Python code examples:
         }
     ]
 }
-  ```
+```
 
-   import requests
-
-   api_url = "http://127.0.0.1:8000/api/Alice%20Johnson"
-
-   response = requests.delete(api_url)
-   print(response.json())
-   ```
 
 ## Testing:
 

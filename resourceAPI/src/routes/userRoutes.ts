@@ -14,3 +14,5 @@ router.delete('/delete/:user_id', deleteUserDetail);
 
 
 export default router;
+
+  
