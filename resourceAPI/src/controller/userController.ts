@@ -10,6 +10,7 @@ import {
 } from "../utils/service";
 import { UserAttributes } from "../utils/constants";
 
+
 export const createUser = async (
   req: Request,
   res: Response,
@@ -134,11 +135,20 @@ export const getUserById = async (
       });
     }
 
+
+    const keysToExclude = ["password"];
+    const updatedUser = excludeProperty(user, keysToExclude);
+
+    const updatedUserDetails = excludeProperty(
+      updatedUser._previousDataValues,
+      keysToExclude
+    );
+
     res.status(200).json({
       status: `success`,
       method: req.method,
       message: `User details`,
-      data: user,
+      data: updatedUserDetails
     });
   } catch (error) {
     next(error);
@@ -162,7 +172,8 @@ export const getAllUser = async (
         message: `Database is empty`,
       });
     }
-  
+
+
     res.status(200).json({
       status: `success`,
       method: req.method,

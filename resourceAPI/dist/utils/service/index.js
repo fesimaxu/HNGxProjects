@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.excludeProperty = exports.cookieTimeout = exports.verifySignature = exports.generateSignature = exports.verifyPassword = exports.hashPassword = void 0;
+exports.excludePropertiesFromArray = exports.excludeProperty = exports.cookieTimeout = exports.verifySignature = exports.generateSignature = exports.verifyPassword = exports.hashPassword = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -57,3 +57,15 @@ const excludeProperty = (obj, keysToExclude) => {
     return newObj;
 };
 exports.excludeProperty = excludeProperty;
+function excludePropertiesFromArray(arr, keysToExclude) {
+    return arr.map((obj) => {
+        const newObj = Object.assign({}, obj);
+        for (const key of keysToExclude) {
+            if (newObj.hasOwnProperty(key)) {
+                delete newObj[key];
+            }
+        }
+        return newObj;
+    });
+}
+exports.excludePropertiesFromArray = excludePropertiesFromArray;

@@ -99,11 +99,14 @@ const getUserById = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
                 message: `user does not exists`,
             });
         }
+        const keysToExclude = ["password"];
+        const updatedUser = (0, service_1.excludeProperty)(user, keysToExclude);
+        const updatedUserDetails = (0, service_1.excludeProperty)(updatedUser._previousDataValues, keysToExclude);
         res.status(200).json({
             status: `success`,
             method: req.method,
             message: `User details`,
-            data: user,
+            data: updatedUserDetails
         });
     }
     catch (error) {
