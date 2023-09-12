@@ -12,7 +12,7 @@ A simple REST API capable of CRUD operations on a "PERSON" resource.
 
 [TEST](https://github.com/fesimaxu/HNGxProjects/blob/main/resourceAPI/script/postmanTest.pm)
 
-[LIVE-LINK]()
+[LIVE-LINK](https://resourceapi.onrender.com/api/users)
 
 Added .env, and node_modules to my .gitignore before pushing any changes to your repository.
 
@@ -337,6 +337,101 @@ return
   "message": "User does not exist"
 }
 ````
+
+
+## Sample API Usage
+
+Here are some sample API usage scenarios with Python code examples:
+
+1. **Create a Person:**
+   ```nodejs
+   requests
+
+   baseurl = "https://resourceapi.onrender.com/api/createusers"
+
+   body = {
+    "userName": "igwekode",
+    "firstName": "uchenna",
+    "lastName": "igwe",
+    "email": "fesimaxu54r40@gmail.com",
+    "dateOfBirth": "18-10-2000",
+    "gender": "male",
+    "password": "myPassword30",
+    "repeat_password": "myPassword30",
+    "phoneNumber": "08134586193",
+    "address": "30 oforkarie st. ago",
+    "occupation": "developer"
+}
+   
+   return response
+   ```
+
+**Response Format (Success - 200):**
+
+```json
+{
+    "status": "success",
+    "method": "POST",
+    "message": "user successfully created",
+    "data": {
+        "id": "a35ebe7d-1f6c-47ea-b182-f6f07edcb20f",
+        "userName": "igwekode",
+        "firstName": "uchenna",
+        "lastName": "igwe",
+        "gender": "male",
+        "dateOfBirth": "18-10-2000",
+        "email": "fesimaxu54r40@gmail.com",
+        "address": "30 oforkarie st. ago",
+        "phoneNumber": "08134586193",
+        "occupation": "developer",
+        "createdAt": "2023-09-12T13:53:21.066Z",
+        "updatedAt": "2023-09-12T13:53:21.066Z"
+    }
+}
+```
+
+2. **Read a Person:**
+   ```nodejs
+   requests
+
+   api_url = "https://resourceapi.onrender.com/api/users"
+
+   ```
+
+    **Response Format (Success - 200):**
+
+  ```json
+   {
+    "status": "success",
+    "method": "GET",
+    "message": "Users details",
+    "data": [
+        {
+            "id": "a35ebe7d-1f6c-47ea-b182-f6f07edcb20f",
+            "userName": "igwekode",
+            "firstName": "uchenna",
+            "lastName": "igwe",
+            "gender": "male",
+            "dateOfBirth": "18-10-2000",
+            "email": "fesimaxu54r40@gmail.com",
+            "password": "$2b$10$X9XDiT1.rlpl.rpJ5/4cR.LFapesoUSwIM0lkgnJfbPD26DU6EFIW",
+            "phoneNumber": "08134586193",
+            "address": "30 oforkarie st. ago",
+            "occupation": "developer",
+            "createdAt": "2023-09-12T13:53:21.066Z",
+            "updatedAt": "2023-09-12T13:53:21.066Z"
+        }
+    ]
+}
+  ```
+
+   import requests
+
+   api_url = "http://127.0.0.1:8000/api/Alice%20Johnson"
+
+   response = requests.delete(api_url)
+   print(response.json())
+   ```
 
 ## Testing:
 
