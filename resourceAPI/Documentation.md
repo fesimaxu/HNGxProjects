@@ -48,13 +48,33 @@ Deployment: Render for hosting
 
 ## Getting Started
 * Follow these steps to set up and run the API locally.
-* Create a new folder: ResourceAPI
+1. Create a new folder: ResourceAPI
 
 
-``node js
-cd ResourceAPI
-yarn init -y
+```node js
+    cd ResourceAPI
+    yarn init -y
+```
+2. Install Dependencies
+Install the required Node dependencies using Yarn add:
+```node js
+    yarn add express morgan cookie-parser
+```
+* Install the necessary Dev Dependencies 
+```node js
+    yarn add --dev typescript @types/express nodemon
+```
+This will install node and any other necessary packages.
 
+3. Run the API Locally
+To run the API locally, use the following command:
+```Typescript
+
+    yarn watch -- compile
+    yarn dev or yarn prod -- to run server
+```
+
+This will start the API server, and it will be available at http://localhost:6000.
 ## Folder Structure:
 
 * src: Contains the application source code.
