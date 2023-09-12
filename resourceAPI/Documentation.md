@@ -97,8 +97,8 @@ Deployment: Render for hosting
 
 - This will start the API server, and it will be available at
 
-```Typescript
-http://localhost:6000/api
+```javascript
+baseurl = "http://localhost:6000/api"
 ```
 
 ## Folder Structure:
@@ -161,7 +161,9 @@ http://localhost:6000/api
 
 **Request Format:**
 
+```javascript
 baseurl = "http://localhost:6000/api/createuser"
+```
 
 ```javascript
 
@@ -268,11 +270,13 @@ return response
 
 **Request Format:**
 
+```javascript
 baseurl = "http://localhost:6000/api/users/update/{user_id}"
+
+```
+
 ```json
-
-
-body ={
+{
     "userName": "igwekode30",
     "firstName": "uchenna",
     "lastName": "igwe",
@@ -342,11 +346,16 @@ json
 Here are some sample API usage scenarios with Python code examples:
 
 1. Create a Person:
+
+```javascript
+ baseurl =' https://resourceapi.onrender.com/api/createusers'
+```
+
 ```json
 
- baseurl = "https://resourceapi.onrender.com/api/createusers"
 
-   body = {
+
+{
     "userName": "igwekode",
     "firstName": "uchenna",
     "lastName": "igwe",
