@@ -9,13 +9,13 @@ A simple REST API capable of CRUD operations on a "PERSON" resource.
 * This project provides a simple REST API for managing person records, allowing you to perform CRUD (Create, Read, Update, Delete) operations. 
 * This README.md file contains detailed instructions on setting up, running, and using the API.
 
-[postman collection for the finished API](https://documenter.getpostman.com/view/27252655/2s9YC31tnR)
+Postman Documentation [postman collection for the finished API](https://documenter.getpostman.com/view/27252655/2s9YC31tnR)
 
-[DOCUMENTATION](https://github.com/fesimaxu/HNGxProjects/blob/main/resourceAPI/Documentation.md)
+Documentation File [DOCUMENTATION](https://github.com/fesimaxu/HNGxProjects/blob/main/resourceAPI/Documentation.md)
 
-[TEST](https://github.com/fesimaxu/HNGxProjects/blob/main/resourceAPI/script/postmanTest.pm)
+Postman Automated test script [TEST](https://github.com/fesimaxu/HNGxProjects/blob/main/resourceAPI/script/postmanTest.pm)
 
-[LIVE-LINK]()
+Live link is hosted on [LIVE-LINK](https://resourceapi.onrender.com/api/users)
 
 Added .env, and node_modules to my .gitignore before pushing any changes to your repository.
 
