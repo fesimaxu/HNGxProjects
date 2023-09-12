@@ -161,10 +161,10 @@ http://localhost:6000/api
 
 **Request Format:**
 
-```javascript
-requests
-
 baseurl = "http://localhost:6000/api/createuser"
+
+```javascript
+
 
 request.body = {
     "userName": "igwekode",
@@ -268,10 +268,9 @@ return response
 
 **Request Format:**
 
-```json
-requests
-
 baseurl = "http://localhost:6000/api/users/update/{user_id}"
+```json
+
 
 body ={
     "userName": "igwekode30",
@@ -286,8 +285,6 @@ body ={
     "address": "30 oforkarie st. ago",
     "occupation": "developer"
 }
-response = requests.get(api_url)
-return response
 
 ```
 
@@ -313,18 +310,17 @@ return response
 
 **Request Format:**
 
-```nodejs
+```javascript
 requests
 
 baseurl = "http://localhost:6000/api/delete/{user_id}"
 
-response = requests.delete(api_url)
-return
 ```
 
 **Response Format (Success - 200):**
 
-````json
+```javascript
+json
 {
     "status": "success",
     "method": "Delete",
@@ -332,20 +328,21 @@ return
 }
 
 **Response Format (Bad Request - 400):**
+
+```
 ```json
 {
   "message": "User does not exist"
 }
-````
+```
 
 
 ## Sample API Usage
 
 Here are some sample API usage scenarios with Python code examples:
 
-1. **Create a Person:**
+1. Create a Person:
 ```json
-requests
 
  baseurl = "https://resourceapi.onrender.com/api/createusers"
 
@@ -388,15 +385,16 @@ requests
 }
 ```
 
-2. **Read a Person:**
-   ```nodejs
+2. Read a Person:
+
+   ```javascript
    requests
 
    api_url = "https://resourceapi.onrender.com/api/users"
 
    ```
 
-    **Response Format (Success - 200):**
+* Response Format (Success - 200):
 
 ```json
    {
