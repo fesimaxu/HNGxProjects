@@ -3,12 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteFile = exports.generateSessionId = void 0;
+exports.deleteFile = exports.generateVideoId = void 0;
 const fs_1 = __importDefault(require("fs"));
-const generateSessionId = () => {
+const generateVideoId = () => {
     return `${Math.random()}` + Date.now().toString();
 };
-exports.generateSessionId = generateSessionId;
+exports.generateVideoId = generateVideoId;
 const deleteFile = (filePath) => {
     fs_1.default.unlink(filePath, (err) => {
         if (err) {

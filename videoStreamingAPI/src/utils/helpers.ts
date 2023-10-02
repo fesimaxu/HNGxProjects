@@ -1,6 +1,6 @@
 import fs from "fs";
 
-export const generateSessionId = () => {
+export const generateVideoId = () => {
     return `${Math.random()}` + Date.now().toString();
   };
   

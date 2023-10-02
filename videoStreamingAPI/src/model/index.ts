@@ -9,10 +9,10 @@ import { IVideoDetails } from "../interface";
  *    VideoInput:
  *      type: object
  *      required: true
- *        - sessionID
+ *        - videoId
  *        - createdAt
  *      properties:
- *        sessionID:
+ *        videoId:
  *          type: string
  *          default: 1696097217927
  *        createdAt:
@@ -25,7 +25,7 @@ import { IVideoDetails } from "../interface";
  *      properties:
  *        _id:
  *          type: string
- *        sessionID:
+ *        videoId:
  *          type: string
  *        createdAt:
  *          type: string
@@ -35,7 +35,7 @@ import { IVideoDetails } from "../interface";
 
 export const VideoSessionSchema: Schema = new Schema<IVideoDetails>(
   {
-    sessionID: {
+    videoId: {
         type: String,
         required: true,
         unique: true,
