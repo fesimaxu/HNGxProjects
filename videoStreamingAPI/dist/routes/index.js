@@ -9,7 +9,7 @@ const router = (0, express_1.Router)();
  * /api/v1/videouploads:
  *   post:
  *     tags:
- *       - Video
+ *       - VideoSession
  *     summary: Start Screen Recording
  *     requestBody:
  *       required: true
@@ -40,7 +40,7 @@ router.post("/videouploads", upload_1.upload.single("file"), videoController_1.u
  *   get:
  *     summary: Get video to stream real time
  *     tags:
- *       - Video
+ *       - VideoSession
  *     parameters:
  *       - in: path
  *         name: videoId
@@ -70,28 +70,10 @@ router.post("/videouploads", upload_1.upload.single("file"), videoController_1.u
 router.get("/streamvideo/:videoId", videoController_1.streamVideoController);
 /**
  * @swagger
- * https://d376c22qqmec5c.cloudfront.net/1696097217927_ucvideo.mp4:
- *   get:
- *     tags:
- *       - Video
- *     summary: Streaming video
- *     description: Video streaming successfully
- *     responses:
- *       200:
- *         description: Successful
- *       500:
- *         description: Internal server error
- *       400:
- *         description: Bad request
- *       404:
- *         description: Not found
- */
-/**
- * @swagger
  * /api/v1/startrecording:
  *   post:
  *     tags:
- *       - Video
+ *       - VideoSession
  *     summary: Start Screen Recording
  *     requestBody:
  *       required: false
@@ -122,7 +104,7 @@ router.post("/startrecording/:videoId", videoController_1.startRecordingControll
  *   get:
  *     summary: Get video to stream real time
  *     tags:
- *       - Video
+ *       - VideoSession
  *     parameters:
  *       - in: path
  *         name: videoId
@@ -153,10 +135,10 @@ router.post("/stoprecording/:videoId", videoController_1.stopRecordingAndSaveFil
 /**
  * @swagger
  * /api/v1/streamrecording/{videoId}:
- *   Post:
+ *   post:
  *     summary: Get video to stream real time
  *     tags:
- *       - Video
+ *       - VideoSession
  *     parameters:
  *       - in: path
  *         name: videoId
@@ -175,13 +157,32 @@ router.post("/stoprecording/:videoId", videoController_1.stopRecordingAndSaveFil
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/Error"
+ *               $ref: ""
  *       500:
  *         description: Failed to Video failed to stream.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/Error"
+ *               $ref: ""
  */
 router.post("/streamrecording/:videoId", videoController_1.streamRecordingController);
+/**
+ * @swagger
+ * https://d376c22qqmec5c.cloudfront.net/1696097217927_ucvideo.mp4:
+ *   get:
+ *     tags:
+ *       - VideoSession
+ *     summary: Streaming video
+ *     description: AWS S3 Video streaming successfully
+ *     responses:
+ *       200:
+ *         description: Successful
+ *       500:
+ *         description: Internal server error
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Not found
+ */
+router.get('https://d376c22qqmec5c.cloudfront.net/1696097217927_ucvideo.mp4');
 exports.default = router;
