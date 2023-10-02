@@ -10,6 +10,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const routes_1 = __importDefault(require("./routes"));
+const swagger_1 = __importDefault(require("./utils/swagger"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT;
@@ -21,6 +22,7 @@ app.use((0, cookie_parser_1.default)());
 app.use('/api/v1', routes_1.default);
 mongoose_1.default.connect(`${process.env.MONGODB_CONN}`).then(() => {
     console.log(`Database is connected !`);
+    (0, swagger_1.default)(app, 7500);
 }).catch((error) => {
     console.log(`Database error at ${error}`);
 });

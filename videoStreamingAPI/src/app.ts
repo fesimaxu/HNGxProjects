@@ -6,6 +6,7 @@ import logger from "morgan";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import VideoStreamingRoutes from "./routes";
+import swaggerDocs from "./utils/swagger";
 
 dotenv.config();
 
@@ -24,6 +25,8 @@ app.use('/api/v1', VideoStreamingRoutes);
 
 mongoose.connect(`${process.env.MONGODB_CONN}`).then(()=>{
     console.log(`Database is connected !`)
+    swaggerDocs(app, 7500);
+    
 }).catch((error: HttpError ) => {
     console.log(`Database error at ${error}`)
 });
