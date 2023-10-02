@@ -169,18 +169,22 @@ export const streamVideoController = async (
       "../uploads",
       `${sessionID}-video.mp4`
     );
+    
 
-    console.log('videoURL ', videoURL)
-
-    if (!fs.existsSync(videoURL)) {
+    //const videoURL = 'https://d376c22qqmec5c.cloudfront.net/1696097217927_ucvideo.mp4';
+    console.log('videoURL1 ', videoURL.split('/')[3])
+    const videoFile = videoURL.split('/')[3] 
+    if (!fs.existsSync(videoFile)) {
       return res.status(404).json({
         status: `error`,
         message: `Video not found`,
         success: false,
       });
     }
+    console.log('videoFile  2 ', videoFile);
 
     const stat = fs.statSync(videoURL);
+    console.log('stat 3', stat)
     const fileSize = stat.size;
     const range = req.headers.range;
 
@@ -215,3 +219,5 @@ export const streamVideoController = async (
     });
   }
 };
+
+
