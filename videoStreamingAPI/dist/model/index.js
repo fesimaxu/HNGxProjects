@@ -18,9 +18,7 @@ const mongoose_1 = require("mongoose");
  *        createdAt:
  *          type: date
  *          default: 2023-10-01T22:18:13.179Z
-
- *
- *    VideoResponse:
+ *     VideoSessionResponse:
  *      type: Object
  *      properties:
  *        _id:
