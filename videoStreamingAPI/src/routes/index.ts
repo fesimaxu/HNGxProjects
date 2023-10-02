@@ -9,8 +9,7 @@ const router = Router();
 router.post('/startrecording', startRecordingController);
 router.post('/stoprecording/:sessionID', stopRecordingAndSaveFileController);
 router.post('/streamrecording/:sessionID', streamRecordingController);
-router.get('/streamvideo/:sessionID', streamVideoController);
-
+router.get('/streamvideo', streamVideoController);
 
 
 

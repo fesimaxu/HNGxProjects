@@ -6,5 +6,5 @@ const router = (0, express_1.Router)();
 router.post('/startrecording', videoController_1.startRecordingController);
 router.post('/stoprecording/:sessionID', videoController_1.stopRecordingAndSaveFileController);
 router.post('/streamrecording/:sessionID', videoController_1.streamRecordingController);
-router.get('/streamvideo/:sessionID', videoController_1.streamVideoController);
+router.get('/streamvideo', videoController_1.streamVideoController);
 exports.default = router;
