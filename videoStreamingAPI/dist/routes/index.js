@@ -166,4 +166,22 @@ router.get('/streamvideo/:sessionId', videoController_1.streamVideoController);
  *         description: Not found
  */
 router.post('/videouploads', upload_1.upload.single('file'), videoController_1.uploadController);
+/**
+ * @swagger
+ * https://d376c22qqmec5c.cloudfront.net/1696097217927_ucvideo.mp4:
+ *   get:
+ *     tags:
+ *       - Video
+ *     summary: Streaming video
+ *     description: Video streaming successfully
+ *     responses:
+ *       200:
+ *         description: Successful
+ *       500:
+ *         description: Internal server error
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Not found
+ */
 exports.default = router;
