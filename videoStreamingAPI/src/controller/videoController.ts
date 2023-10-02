@@ -3,6 +3,7 @@ import * as path from "path";
 import * as fs from "fs";
 import VideoSession from "../model";
 import { deleteFile, generateVideoId } from "../utils/helpers";
+import { videoAudioTranscribe } from "../utils/service";
 
 const recordingData: Record<string, any> = {};
 
@@ -201,18 +202,23 @@ export const stopRecordingAndSaveFileController = async (
     clearTimeout(recordingData[Id].timeout);
     delete recordingData[Id];
 
-    // Now, generate the stream URL and send it in the response
+    // generate the stream URL and send it in the response
     const streamVideo = `/stream/${Id}`;
+
+    // generate the audio transcript of the video
+    const videoTranscript = await videoAudioTranscribe(videoFilePath);
 
     setTimeout(() => {
       deleteFile(videoFilePath);
     }, 5 * 60 * 1000);
 
+    
     res.status(200).json({ 
         status: `success`,
         message: "Video saved successfully",
         streamVideo, 
         videoFilePath ,
+        videoTranscript,
         success: true
     });
   } catch (error) {

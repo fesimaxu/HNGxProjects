@@ -40,6 +40,7 @@ const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
 const model_1 = __importDefault(require("../model"));
 const helpers_1 = require("../utils/helpers");
+const service_1 = require("../utils/service");
 const recordingData = {};
 const streamVideoController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -185,8 +186,10 @@ const stopRecordingAndSaveFileController = (req, res, next) => __awaiter(void 0,
         fs.writeFileSync(videoFilePath, videoData);
         clearTimeout(recordingData[Id].timeout);
         delete recordingData[Id];
-        // Now, generate the stream URL and send it in the response
+        // generate the stream URL and send it in the response
         const streamVideo = `/stream/${Id}`;
+        // generate the audio transcript of the video
+        const videoTranscript = yield (0, service_1.videoAudioTranscribe)(videoFilePath);
         setTimeout(() => {
             (0, helpers_1.deleteFile)(videoFilePath);
         }, 5 * 60 * 1000);
@@ -195,6 +198,7 @@ const stopRecordingAndSaveFileController = (req, res, next) => __awaiter(void 0,
             message: "Video saved successfully",
             streamVideo,
             videoFilePath,
+            videoTranscript,
             success: true
         });
     }
