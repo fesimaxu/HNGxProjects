@@ -9,10 +9,10 @@ const mongoose_1 = require("mongoose");
  *    VideoInput:
  *      type: object
  *      required: true
- *        - sessionID
+ *        - videoId
  *        - createdAt
  *      properties:
- *        sessionID:
+ *        videoId:
  *          type: string
  *          default: 1696097217927
  *        createdAt:
@@ -25,7 +25,7 @@ const mongoose_1 = require("mongoose");
  *      properties:
  *        _id:
  *          type: string
- *        sessionID:
+ *        videoId:
  *          type: string
  *        createdAt:
  *          type: string
@@ -33,7 +33,7 @@ const mongoose_1 = require("mongoose");
  *
  */
 exports.VideoSessionSchema = new mongoose_1.Schema({
-    sessionID: {
+    videoId: {
         type: String,
         required: true,
         unique: true,

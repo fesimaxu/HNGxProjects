@@ -43,17 +43,16 @@ const helpers_1 = require("../utils/helpers");
 const recordingData = {};
 const streamVideoController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { sessionId } = req.params;
-        console.log('sessionID ', sessionId);
-        const videoURL = path.join(__dirname, "../uploads", `${sessionId}-video.mp4`);
-        if (!fs.existsSync(videoURL)) {
+        const { Id } = req.params;
+        const videoFilePath = path.join(__dirname, "../uploads", `${Id}-video.mp4`);
+        if (!fs.existsSync(videoFilePath)) {
             return res.status(404).json({
                 status: `error`,
                 message: `Video not found`,
                 success: false,
             });
         }
-        const stat = fs.statSync(videoURL);
+        const stat = fs.statSync(videoFilePath);
         console.log('stat 3', stat);
         const fileSize = stat.size;
         const range = req.headers.range;
@@ -62,7 +61,7 @@ const streamVideoController = (req, res, next) => __awaiter(void 0, void 0, void
             const start = parseInt(parts[0], 10);
             const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
             const chunkSize = end - start + 1;
-            const file = fs.createReadStream(videoURL, { start, end });
+            const file = fs.createReadStream(videoFilePath, { start, end });
             const headers = {
                 "Content-Range": `bytes ${start}-${end}/${fileSize}`,
                 "Accept-Ranges": "bytes",
@@ -78,7 +77,7 @@ const streamVideoController = (req, res, next) => __awaiter(void 0, void 0, void
                 "Content-Type": "video/mp4",
             };
             res.writeHead(200, headers);
-            fs.createReadStream(videoURL).pipe(res);
+            fs.createReadStream(videoFilePath).pipe(res);
         }
     }
     catch (error) {
@@ -101,14 +100,14 @@ const uploadController = (req, res, next) => {
 exports.uploadController = uploadController;
 const startRecordingController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const sessionID = (0, helpers_1.generateSessionId)();
+        const videoId = (0, helpers_1.generateVideoId)();
         const createdAt = new Date();
-        yield model_1.default.create({ sessionID, createdAt });
-        recordingData[sessionID] = { data: [], timeout: null }; // Add a timeout property
+        yield model_1.default.create({ videoId, createdAt });
+        recordingData[videoId] = { data: [], timeout: null }; // Add a timeout property
         res.status(200).json({
             status: `success`,
             message: `video recording started`,
-            data: sessionID,
+            data: videoId,
             success: true,
         });
     }
@@ -125,15 +124,14 @@ exports.startRecordingController = startRecordingController;
 const streamRecordingController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { Id } = req.params;
-        const sessionExists = yield model_1.default.exists({ sessionID: Id });
-        if (!sessionExists) {
+        const isExists = yield model_1.default.exists({ videoId: Id });
+        if (!isExists) {
             return res.status(404).json({
                 status: `error`,
-                message: `Session not found in the database`,
+                message: `video not found`,
                 success: false,
             });
         }
-        console.log(`Received video data chunk for session ${Id}`);
         const decodedVideoDataChunk = Buffer.from(req.body.videoDataChunk, "base64");
         recordingData[Id].data.push(decodedVideoDataChunk);
         if (recordingData[Id].timeout) {
@@ -161,11 +159,11 @@ exports.streamRecordingController = streamRecordingController;
 const stopRecordingAndSaveFileController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { Id } = req.params;
-        const sessionExists = yield model_1.default.exists({ sessionID: Id });
-        if (!sessionExists) {
+        const videoExists = yield model_1.default.exists({ videoId: Id });
+        if (!videoExists) {
             return res.status(404).json({
                 status: `error`,
-                message: "Session not found in the database",
+                message: "Video not found in the database",
                 success: false
             });
         }
@@ -173,30 +171,30 @@ const stopRecordingAndSaveFileController = (req, res, next) => __awaiter(void 0,
             recordingData[Id].data === undefined) {
             return res.status(404).json({
                 status: `error`,
-                message: "Streaming session doesn't exist",
+                message: "Streaming video doesn't exist",
                 success: false
             });
         }
         const videoData = Buffer.concat(recordingData[Id].data);
-        const uniqueFilename = `${Id}-video.mp4`;
+        const fileName = `${Id}-video.mp4`;
         const directoryPath = path.join(__dirname, "../uploads");
         if (!fs.existsSync(directoryPath)) {
             fs.mkdirSync(directoryPath, { recursive: true });
         }
-        const videoURL = path.join(directoryPath, uniqueFilename);
-        fs.writeFileSync(videoURL, videoData);
+        const videoFilePath = path.join(directoryPath, fileName);
+        fs.writeFileSync(videoFilePath, videoData);
         clearTimeout(recordingData[Id].timeout);
         delete recordingData[Id];
         // Now, generate the stream URL and send it in the response
-        const streamURL = `/stream/${Id}`;
+        const streamVideo = `/stream/${Id}`;
         setTimeout(() => {
-            (0, helpers_1.deleteFile)(videoURL);
+            (0, helpers_1.deleteFile)(videoFilePath);
         }, 5 * 60 * 1000);
         res.status(200).json({
             status: `success`,
             message: "Video saved successfully",
-            streamURL,
-            videoURL,
+            streamVideo,
+            videoFilePath,
             success: true
         });
     }

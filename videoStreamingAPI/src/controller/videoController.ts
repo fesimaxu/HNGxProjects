@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import * as path from "path";
 import * as fs from "fs";
 import VideoSession from "../model";
-import { deleteFile, generateSessionId } from "../utils/helpers";
+import { deleteFile, generateVideoId } from "../utils/helpers";
 
 const recordingData: Record<string, any> = {};
 
@@ -12,16 +12,16 @@ export const streamVideoController = async (
   next: NextFunction
 ) => {
   try {
-    const { sessionId } = req.params;
-    console.log('sessionID ', sessionId);
+    const { Id } = req.params;
 
-    const videoURL = path.join(
+
+    const videoFilePath = path.join(
       __dirname,
       "../uploads",
-      `${sessionId}-video.mp4`
+      `${Id}-video.mp4`
     );
     
-    if (!fs.existsSync(videoURL)) {
+    if (!fs.existsSync(videoFilePath)) {
       return res.status(404).json({
         status: `error`,
         message: `Video not found`,
@@ -30,7 +30,7 @@ export const streamVideoController = async (
     }
 
 
-    const stat = fs.statSync(videoURL);
+    const stat = fs.statSync(videoFilePath);
     console.log('stat 3', stat)
     const fileSize = stat.size;
     const range = req.headers.range;
@@ -40,7 +40,7 @@ export const streamVideoController = async (
       const start = parseInt(parts[0], 10);
       const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
       const chunkSize = end - start + 1;
-      const file = fs.createReadStream(videoURL, { start, end });
+      const file = fs.createReadStream(videoFilePath, { start, end });
       const headers = {
         "Content-Range": `bytes ${start}-${end}/${fileSize}`,
         "Accept-Ranges": "bytes",
@@ -55,7 +55,7 @@ export const streamVideoController = async (
         "Content-Type": "video/mp4",
       };
       res.writeHead(200, headers);
-      fs.createReadStream(videoURL).pipe(res);
+      fs.createReadStream(videoFilePath).pipe(res);
     }
   } catch (error) {
     console.log(error);
@@ -87,16 +87,16 @@ export const startRecordingController = async (
   next: NextFunction
 ) => {
   try {
-    const sessionID = generateSessionId();
+    const videoId = generateVideoId();
     const createdAt = new Date();
     
-    await VideoSession.create({ sessionID, createdAt });
-    recordingData[sessionID] = { data: [], timeout: null }; // Add a timeout property
+    await VideoSession.create({ videoId, createdAt });
+    recordingData[videoId] = { data: [], timeout: null }; // Add a timeout property
 
     res.status(200).json({
       status: `success`,
       message: `video recording started`,
-      data: sessionID,
+      data: videoId,
       success: true,
     });
   } catch (error) {
@@ -116,18 +116,17 @@ export const streamRecordingController = async (
 ) => {
   try {
     const { Id } = req.params;
-    const sessionExists = await VideoSession.exists({ sessionID: Id });
+    const isExists = await VideoSession.exists({ videoId: Id });
 
 
-    if (!sessionExists) {
+    if (!isExists) {
       return res.status(404).json({
         status: `error`,
-        message: `Session not found in the database`,
+        message: `video not found`,
         success: false,
       });
     }
 
-    console.log(`Received video data chunk for session ${Id}`);
 
     const decodedVideoDataChunk = Buffer.from(
       req.body.videoDataChunk,
@@ -165,12 +164,12 @@ export const stopRecordingAndSaveFileController = async (
 ) => {
   try {
     const { Id } = req.params;
-    const sessionExists = await VideoSession.exists({ sessionID : Id });
+    const videoExists = await VideoSession.exists({ videoId : Id });
 
-    if (!sessionExists) {
+    if (!videoExists) {
       return res.status(404).json({ 
             status: `error`,
-            message: "Session not found in the database",
+            message: "Video not found in the database",
             success: false
         });
     }
@@ -181,13 +180,13 @@ export const stopRecordingAndSaveFileController = async (
     ) {
       return res.status(404).json({ 
         status: `error`,
-        message: "Streaming session doesn't exist",
+        message: "Streaming video doesn't exist",
         success: false
     });
     }
 
     const videoData = Buffer.concat(recordingData[Id].data);
-    const uniqueFilename = `${Id}-video.mp4`;
+    const fileName = `${Id}-video.mp4`;
 
     const directoryPath = path.join(__dirname, "../uploads");
 
@@ -195,25 +194,25 @@ export const stopRecordingAndSaveFileController = async (
       fs.mkdirSync(directoryPath, { recursive: true });
     }
 
-    const videoURL = path.join(directoryPath, uniqueFilename);
+    const videoFilePath = path.join(directoryPath, fileName);
 
-    fs.writeFileSync(videoURL, videoData);
+    fs.writeFileSync(videoFilePath, videoData);
 
     clearTimeout(recordingData[Id].timeout);
     delete recordingData[Id];
 
     // Now, generate the stream URL and send it in the response
-    const streamURL = `/stream/${Id}`;
+    const streamVideo = `/stream/${Id}`;
 
     setTimeout(() => {
-      deleteFile(videoURL);
+      deleteFile(videoFilePath);
     }, 5 * 60 * 1000);
 
     res.status(200).json({ 
         status: `success`,
         message: "Video saved successfully",
-        streamURL, 
-        videoURL ,
+        streamVideo, 
+        videoFilePath ,
         success: true
     });
   } catch (error) {

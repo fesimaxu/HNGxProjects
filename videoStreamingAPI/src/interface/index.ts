@@ -1,4 +1,4 @@
 export interface IVideoDetails {
-    sessionID: string;
+    videoId: string;
     createdAt: Date;
 }
