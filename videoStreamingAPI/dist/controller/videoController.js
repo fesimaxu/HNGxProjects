@@ -35,143 +35,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.streamVideoController = exports.stopRecordingAndSaveFileController = exports.streamRecordingController = exports.startRecordingController = void 0;
+exports.stopRecordingAndSaveFileController = exports.streamRecordingController = exports.startRecordingController = exports.uploadController = exports.streamVideoController = void 0;
 const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
 const model_1 = __importDefault(require("../model"));
 const helpers_1 = require("../utils/helpers");
 const recordingData = {};
-const startRecordingController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const sessionID = (0, helpers_1.generateUniqueSessionID)();
-        const createdAt = new Date();
-        console.log("New recording started: ", "Session ID:", sessionID, createdAt);
-        yield model_1.default.create({ sessionID, createdAt });
-        recordingData[sessionID] = { data: [], timeout: null }; // Add a timeout property
-        res.status(200).json({
-            status: `success`,
-            message: `video recording started`,
-            data: sessionID,
-            success: true,
-        });
-    }
-    catch (error) {
-        res.status(500).json({
-            status: `error`,
-            message: `video recording failed`,
-            data: console.log(error),
-            success: false,
-        });
-    }
-});
-exports.startRecordingController = startRecordingController;
-const streamRecordingController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { sessionID } = req.params;
-        const sessionExists = yield model_1.default.exists({ sessionID });
-        console.log(sessionID);
-        console.log(sessionExists);
-        console.log(recordingData);
-        if (!sessionExists) {
-            return res.status(404).json({
-                status: `error`,
-                message: `Session not found in the database`,
-                success: false,
-            });
-        }
-        console.log(`Received video data chunk for session ${sessionID}`);
-        const decodedVideoDataChunk = Buffer.from(req.body.videoDataChunk, "base64");
-        recordingData[sessionID].data.push(decodedVideoDataChunk);
-        if (recordingData[sessionID].timeout) {
-            clearTimeout(recordingData[sessionID].timeout);
-        }
-        recordingData[sessionID].timeout = setTimeout(() => {
-            (0, helpers_1.deleteFile)(sessionID);
-        }, 5 * 60 * 1000); // 5 minutes in milliseconds
-        res.status(200).json({
-            status: `success`,
-            message: "Video data chunk received successfully",
-            success: true,
-        });
-    }
-    catch (error) {
-        console.error(error);
-        res.status(500).json({
-            status: `error`,
-            message: "Failed to stream video data",
-            success: false
-        });
-    }
-});
-exports.streamRecordingController = streamRecordingController;
-const stopRecordingAndSaveFileController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { sessionID } = req.params;
-        const sessionExists = yield model_1.default.exists({ sessionID });
-        if (!sessionExists) {
-            return res.status(404).json({
-                status: `error`,
-                message: "Session not found in the database",
-                success: false
-            });
-        }
-        if (recordingData[sessionID] === undefined ||
-            recordingData[sessionID].data === undefined) {
-            return res.status(404).json({
-                status: `error`,
-                message: "Streaming session doesn't exist",
-                success: false
-            });
-        }
-        const videoData = Buffer.concat(recordingData[sessionID].data);
-        const uniqueFilename = `${sessionID}-video.mp4`;
-        const directoryPath = path.join(__dirname, "../uploads");
-        if (!fs.existsSync(directoryPath)) {
-            fs.mkdirSync(directoryPath, { recursive: true });
-        }
-        const videoURL = path.join(directoryPath, uniqueFilename);
-        fs.writeFileSync(videoURL, videoData);
-        clearTimeout(recordingData[sessionID].timeout);
-        delete recordingData[sessionID];
-        // Now, generate the stream URL and send it in the response
-        const streamURL = `/stream/${sessionID}`;
-        setTimeout(() => {
-            (0, helpers_1.deleteFile)(videoURL);
-        }, 5 * 60 * 1000);
-        res.status(200).json({
-            status: `success`,
-            message: "Video saved successfully",
-            streamURL,
-            videoURL,
-            success: true
-        });
-    }
-    catch (error) {
-        console.error(error);
-        res.status(500).json({
-            status: `error`,
-            message: "Failed to stop recording and save file",
-            success: false
-        });
-    }
-});
-exports.stopRecordingAndSaveFileController = stopRecordingAndSaveFileController;
 const streamVideoController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { sessionID } = req.params;
-        console.log('sessionID ', sessionID);
-        const videoURL = path.join(__dirname, "../uploads", `${sessionID}-video.mp4`);
-        //const videoURL = 'https://d376c22qqmec5c.cloudfront.net/1696097217927_ucvideo.mp4';
-        console.log('videoURL1 ', videoURL.split('/')[3]);
-        const videoFile = videoURL.split('/')[3];
-        if (!fs.existsSync(videoFile)) {
+        const { sessionId } = req.params;
+        console.log('sessionID ', sessionId);
+        const videoURL = path.join(__dirname, "../uploads", `${sessionId}-video.mp4`);
+        if (!fs.existsSync(videoURL)) {
             return res.status(404).json({
                 status: `error`,
                 message: `Video not found`,
                 success: false,
             });
         }
-        console.log('videoFile  2 ', videoFile);
         const stat = fs.statSync(videoURL);
         console.log('stat 3', stat);
         const fileSize = stat.size;
@@ -210,3 +91,122 @@ const streamVideoController = (req, res, next) => __awaiter(void 0, void 0, void
     }
 });
 exports.streamVideoController = streamVideoController;
+const uploadController = (req, res, next) => {
+    res.send({
+        status: `success`,
+        message: `File uploaded successfully!`,
+        success: true
+    });
+};
+exports.uploadController = uploadController;
+const startRecordingController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const sessionID = (0, helpers_1.generateSessionId)();
+        const createdAt = new Date();
+        yield model_1.default.create({ sessionID, createdAt });
+        recordingData[sessionID] = { data: [], timeout: null }; // Add a timeout property
+        res.status(200).json({
+            status: `success`,
+            message: `video recording started`,
+            data: sessionID,
+            success: true,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            status: `error`,
+            message: `video recording failed`,
+            data: console.log(error),
+            success: false,
+        });
+    }
+});
+exports.startRecordingController = startRecordingController;
+const streamRecordingController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { Id } = req.params;
+        const sessionExists = yield model_1.default.exists({ sessionID: Id });
+        if (!sessionExists) {
+            return res.status(404).json({
+                status: `error`,
+                message: `Session not found in the database`,
+                success: false,
+            });
+        }
+        console.log(`Received video data chunk for session ${Id}`);
+        const decodedVideoDataChunk = Buffer.from(req.body.videoDataChunk, "base64");
+        recordingData[Id].data.push(decodedVideoDataChunk);
+        if (recordingData[Id].timeout) {
+            clearTimeout(recordingData[Id].timeout);
+        }
+        recordingData[Id].timeout = setTimeout(() => {
+            (0, helpers_1.deleteFile)(Id);
+        }, 5 * 60 * 1000); // 5 minutes in milliseconds
+        res.status(200).json({
+            status: `success`,
+            message: "Video data chunk received successfully",
+            success: true,
+        });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: `error`,
+            message: "Failed to stream video data",
+            success: false
+        });
+    }
+});
+exports.streamRecordingController = streamRecordingController;
+const stopRecordingAndSaveFileController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { Id } = req.params;
+        const sessionExists = yield model_1.default.exists({ sessionID: Id });
+        if (!sessionExists) {
+            return res.status(404).json({
+                status: `error`,
+                message: "Session not found in the database",
+                success: false
+            });
+        }
+        if (recordingData[Id] === undefined ||
+            recordingData[Id].data === undefined) {
+            return res.status(404).json({
+                status: `error`,
+                message: "Streaming session doesn't exist",
+                success: false
+            });
+        }
+        const videoData = Buffer.concat(recordingData[Id].data);
+        const uniqueFilename = `${Id}-video.mp4`;
+        const directoryPath = path.join(__dirname, "../uploads");
+        if (!fs.existsSync(directoryPath)) {
+            fs.mkdirSync(directoryPath, { recursive: true });
+        }
+        const videoURL = path.join(directoryPath, uniqueFilename);
+        fs.writeFileSync(videoURL, videoData);
+        clearTimeout(recordingData[Id].timeout);
+        delete recordingData[Id];
+        // Now, generate the stream URL and send it in the response
+        const streamURL = `/stream/${Id}`;
+        setTimeout(() => {
+            (0, helpers_1.deleteFile)(videoURL);
+        }, 5 * 60 * 1000);
+        res.status(200).json({
+            status: `success`,
+            message: "Video saved successfully",
+            streamURL,
+            videoURL,
+            success: true
+        });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: `error`,
+            message: "Failed to stop recording and save file",
+            success: false
+        });
+    }
+});
+exports.stopRecordingAndSaveFileController = stopRecordingAndSaveFileController;

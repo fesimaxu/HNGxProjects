@@ -1,7 +1,7 @@
 import fs from "fs";
 
-export const generateUniqueSessionID = () => {
-    return Date.now().toString();
+export const generateSessionId = () => {
+    return `${Math.random()}` + Date.now().toString();
   };
   
 export const deleteFile = (filePath: string) => {
