@@ -103,12 +103,13 @@ const startRecordingController = (req, res, next) => __awaiter(void 0, void 0, v
     try {
         const videoId = (0, helpers_1.generateVideoId)();
         const createdAt = new Date();
-        yield model_1.default.create({ videoId, createdAt });
+        const videoData = yield model_1.default.create({ videoId, createdAt });
         recordingData[videoId] = { data: [], timeout: null }; // Add a timeout property
         res.status(200).json({
             status: `success`,
             message: `video recording started`,
             data: videoId,
+            videoData,
             success: true,
         });
     }
@@ -124,8 +125,9 @@ const startRecordingController = (req, res, next) => __awaiter(void 0, void 0, v
 exports.startRecordingController = startRecordingController;
 const streamRecordingController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { Id } = req.params;
-        const isExists = yield model_1.default.exists({ videoId: Id });
+        const { videoId } = req.params;
+        const isExists = yield model_1.default.exists({ videoId });
+        console.log('isExists', isExists);
         if (!isExists) {
             return res.status(404).json({
                 status: `error`,
@@ -134,12 +136,12 @@ const streamRecordingController = (req, res, next) => __awaiter(void 0, void 0, 
             });
         }
         const decodedVideoDataChunk = Buffer.from(req.body.videoDataChunk, "base64");
-        recordingData[Id].data.push(decodedVideoDataChunk);
-        if (recordingData[Id].timeout) {
-            clearTimeout(recordingData[Id].timeout);
+        recordingData[videoId].data.push(decodedVideoDataChunk);
+        if (recordingData[videoId].timeout) {
+            clearTimeout(recordingData[videoId].timeout);
         }
-        recordingData[Id].timeout = setTimeout(() => {
-            (0, helpers_1.deleteFile)(Id);
+        recordingData[videoId].timeout = setTimeout(() => {
+            (0, helpers_1.deleteFile)(videoId);
         }, 5 * 60 * 1000); // 5 minutes in milliseconds
         res.status(200).json({
             status: `success`,
@@ -160,7 +162,7 @@ exports.streamRecordingController = streamRecordingController;
 const stopRecordingAndSaveFileController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { Id } = req.params;
-        const videoExists = yield model_1.default.exists({ videoId: Id });
+        const videoExists = yield model_1.default.find({ videoId: Id });
         if (!videoExists) {
             return res.status(404).json({
                 status: `error`,
