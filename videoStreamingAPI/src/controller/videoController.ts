@@ -91,13 +91,14 @@ export const startRecordingController = async (
     const videoId = generateVideoId();
     const createdAt = new Date();
     
-    await VideoSession.create({ videoId, createdAt });
+    const videoData = await VideoSession.create({ videoId, createdAt });
     recordingData[videoId] = { data: [], timeout: null }; // Add a timeout property
 
     res.status(200).json({
       status: `success`,
       message: `video recording started`,
       data: videoId,
+      videoData,
       success: true,
     });
   } catch (error) {
@@ -116,9 +117,9 @@ export const streamRecordingController = async (
   next: NextFunction
 ) => {
   try {
-    const { Id } = req.params;
-    const isExists = await VideoSession.exists({ videoId: Id });
-
+    const { videoId } = req.params;
+    const isExists = await VideoSession.exists({ videoId });
+    console.log('isExists', isExists)
 
     if (!isExists) {
       return res.status(404).json({
@@ -133,14 +134,14 @@ export const streamRecordingController = async (
       req.body.videoDataChunk,
       "base64"
     );
-    recordingData[Id].data.push(decodedVideoDataChunk);
+    recordingData[videoId].data.push(decodedVideoDataChunk);
 
-    if (recordingData[Id].timeout) {
-      clearTimeout(recordingData[Id].timeout);
+    if (recordingData[videoId].timeout) {
+      clearTimeout(recordingData[videoId].timeout);
     }
 
-    recordingData[Id].timeout = setTimeout(() => {
-      deleteFile(Id);
+    recordingData[videoId].timeout = setTimeout(() => {
+      deleteFile(videoId);
     }, 5 * 60 * 1000); // 5 minutes in milliseconds
 
     res.status(200).json({
@@ -165,7 +166,7 @@ export const stopRecordingAndSaveFileController = async (
 ) => {
   try {
     const { Id } = req.params;
-    const videoExists = await VideoSession.exists({ videoId : Id });
+    const videoExists = await VideoSession.find({ videoId : Id });
 
     if (!videoExists) {
       return res.status(404).json({ 

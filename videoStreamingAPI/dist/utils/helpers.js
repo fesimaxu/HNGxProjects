@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteFile = exports.generateVideoId = void 0;
 const fs_1 = __importDefault(require("fs"));
 const generateVideoId = () => {
-    return `${Math.random()}` + Date.now().toString();
+    return Date.now().toString();
 };
 exports.generateVideoId = generateVideoId;
 const deleteFile = (filePath) => {

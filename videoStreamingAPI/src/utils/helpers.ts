@@ -1,7 +1,7 @@
 import fs from "fs";
 
 export const generateVideoId = () => {
-    return `${Math.random()}` + Date.now().toString();
+    return Date.now().toString();
   };
   
 export const deleteFile = (filePath: string) => {
